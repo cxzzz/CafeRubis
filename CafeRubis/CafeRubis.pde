@@ -8,6 +8,7 @@ void setup() {
   size(800, 600);
   border = 100;
   gap = 50;
+  total = 0.00f;
   // call loadData() in setup
   loadData();
   printProducts();
@@ -20,11 +21,14 @@ void setup() {
 ArrayList<Product> products = new ArrayList<Product>();
 ArrayList<Product> bill = new ArrayList<Product>();
 
-float border;
-float gap;
-float x, y;
-float rectW, rectH;
-float x1, y1;
+float border; // border
+float gap; // gap between rect
+float x, y; // drawing rect
+float rectW, rectH; // rect W and H
+float x1, y1; // detect mousepressed
+float x2, y2; // for bill
+float total;
+boolean status;
 
 void loadData() {
   // Load table from csv file
@@ -72,12 +76,6 @@ void displayProducts() {
     
     // DRAW MIDDLE BAR
     line(width / 2, border, width /2, height - border);
-
-    // DRAW BILL MENU
-    fill(255);
-    stroke(0);
-    rect(width / 2 + 20, border, width / 2 - 20 - border, height - border * 2);
-
   }
 }
 
@@ -90,12 +88,42 @@ void mousePressed() {
     // if is inside the rect
     if (dist(x1, y1, mouseX, y1) < rectW / 2) {
       if (dist(x1, y1, x1, mouseY) < rectH / 2) {
-        println(i);  
+        if (bill.size() < 11) {
+          Product b = products.get(i);
+          bill.add(b);
+          total += b.price;
+        }
       }
     }
   }
 }
 
+void displayBill() {
+
+  x2 = width / 2 + 30;
+  y2 = border + 50;
+  // DRAW BILL MENU
+  fill(255);
+  stroke(0);    
+  rect(width / 2 + 20, border, width / 2 - 20 - border, height - border * 2);
+  fill(0);
+  text("Your Bill", 535, border + 15); 
+  // search for bill arraylist (if there exist an item, draw it
+  for (int i = 0; i < bill.size(); i++) {
+    Product b = bill.get(i);
+    fill(0);
+    y2 = map(i, 0, 11, border + 50, height - border);
+    text(b.name, x2, y2);
+    text(nf(b.price,1,2), (x2 + width / 2 - 20 - border) * 0.9f, y2);
+  }
+  // print total below it
+  text("Total:", x2, y2 + 25);
+  text(nf(total, 1, 2), (x2 + width / 2 - 20 - border) * 0.9f, y2 + 25);
+}
+
+
 void draw() {
   displayProducts();
+  displayBill();
+
 }
