@@ -1,14 +1,16 @@
 /*
-  Labtest 1
+ Labtest 1
  Student no: C16434996
  Name: Chenxi Zhang
- */
+*/
 
 void setup() {
   size(800, 600);
   border = 100;
   gap = 50;
   total = 0.00f;
+  x2 = width / 2 + 30;
+  y2 = border + 50;
   // call loadData() in setup
   loadData();
   printProducts();
@@ -88,7 +90,9 @@ void mousePressed() {
     // if is inside the rect
     if (dist(x1, y1, mouseX, y1) < rectW / 2) {
       if (dist(x1, y1, x1, mouseY) < rectH / 2) {
-        if (bill.size() < 11) {
+        // check that will not go over 10 as shown in video, 
+        // because it will go over the canvas!
+        if (bill.size() < 10) {
           Product b = products.get(i);
           bill.add(b);
           total += b.price;
@@ -99,19 +103,18 @@ void mousePressed() {
 }
 
 void displayBill() {
-
-  x2 = width / 2 + 30;
-  y2 = border + 50;
   // DRAW BILL MENU
   fill(255);
   stroke(0);    
   rect(width / 2 + 20, border, width / 2 - 20 - border, height - border * 2);
   fill(0);
-  text("Your Bill", 535, border + 15); 
+  text("Your Bill", width / 2 * 1.33, border + 15); 
   // search for bill arraylist (if there exist an item, draw it
   for (int i = 0; i < bill.size(); i++) {
+    // get bill
     Product b = bill.get(i);
     fill(0);
+    // print bill name and bill text
     y2 = map(i, 0, 11, border + 50, height - border);
     text(b.name, x2, y2);
     text(nf(b.price,1,2), (x2 + width / 2 - 20 - border) * 0.9f, y2);
@@ -125,5 +128,4 @@ void displayBill() {
 void draw() {
   displayProducts();
   displayBill();
-
 }
